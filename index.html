@@ -643,7 +643,19 @@ a{text-decoration:none;}
 /* =====================================================================
    SMART PLACEMENT EXAM PORTAL - APPLICATION LOGIC
 ===================================================================== */
-const DB_KEYS = ['settings','admins','students','exams','questions','assignments','attempts','results','notifications','loginActivity','activeAttempts','emailLog','firebaseConfig'];
+  const firebaseConfig = {
+  apiKey: "AIzaSyBGOsO5w17YdohTeMN0G4qQxfZDyYtZh_w",
+  authDomain: "smart-placement-exam-portal.firebaseapp.com",
+  projectId: "smart-placement-exam-portal",
+  storageBucket: "smart-placement-exam-portal.firebasestorage.app",
+  messagingSenderId: "166414245595",
+  appId: "1:166414245595:web:258848313bdfe7f064b6fe",
+  measurementId: "G-DEG572Z6BB"
+};
+
+firebase.initializeApp(firebaseConfig);
+const firestore = firebase.firestore();
+  const DB_KEYS = ['settings','admins','students','exams','questions','assignments','attempts','results','notifications','loginActivity','activeAttempts','emailLog','firebaseConfig'];
 const DB = {
   get(key){ try{ return JSON.parse(localStorage.getItem('spep_'+key)) ?? null; }catch(e){ return null; } },
   set(key,val){ localStorage.setItem('spep_'+key, JSON.stringify(val)); },
