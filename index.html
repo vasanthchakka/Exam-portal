@@ -1160,7 +1160,7 @@ async function sendEmailToCandidate(toEmail, toName, subject, body, category) {
     return false;
   }
 }
-}
+
 function updateEmailLogStatus(mailId, status){
   const log=DB.all('emailLog').map(m=>m.id===mailId?{...m,status}:m);
   DB.set('emailLog',log);
