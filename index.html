@@ -1135,26 +1135,31 @@ function initFirebaseIfConfigured(){
     return false;
   }
 }
-function sendEmailToCandidate(toEmail, toName, subject, body, category){
-  const cfg=getFirebaseConfig();
-  const mailCollection=(cfg && cfg.mailCollection) || 'mail';
-  const logEntry={id:uid('mail'),to:toEmail,toName,subject,body,category:category||'General',sentAt:nowISO(),
-    status:isFirebaseConnected()? 'queued' : 'simulated'};
-  const log=DB.all('emailLog');
-  log.unshift(logEntry);
-  DB.set('emailLog',log);
-  if(isFirebaseConnected()){
-    firestoreDb.collection(mailCollection).add({
-      to:[toEmail],
-      message:{ subject:subject, text:body, html:'<pre style="font-family:inherit;white-space:pre-wrap">'+escapeHtml(body)+'</pre>' }
-    }).then(()=>{
-      updateEmailLogStatus(logEntry.id,'sent');
-    }).catch(err=>{
-      updateEmailLogStatus(logEntry.id,'failed: '+(err && err.message? err.message:'unknown error'));
-      toast('Email to '+toEmail+' failed to send — check your Firebase setup','danger');
-    });
+async function sendEmailToCandidate(toEmail, toName, subject, body, category) {
+  try {
+    await emailjs.send(
+      "service_5qo6xjj",
+      "template_oudtvb8",
+      {
+        to_email: toEmail,
+        student_name: toName,
+        exam_name: subject,
+        exam_date: "",
+        exam_time: "",
+        duration: "",
+        message: body
+      }
+    );
+
+    toast("Email sent successfully", "success");
+    return true;
+
+  } catch (error) {
+    console.error("EmailJS Error:", error);
+    toast("Email failed: " + (error.text || error.message), "danger");
+    return false;
   }
-  return true;
+}
 }
 function updateEmailLogStatus(mailId, status){
   const log=DB.all('emailLog').map(m=>m.id===mailId?{...m,status}:m);
